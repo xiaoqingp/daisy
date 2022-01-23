@@ -7,6 +7,12 @@ import io.netty.handler.codec.http.HttpContentCompressor;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
 
+/**
+ * netty 初始器
+ * @author peixiaoqing
+ * @date 2022/01/22
+ * @since 1.0.0
+ */
 public class HttpInitializer extends ChannelInitializer <SocketChannel> {
 
     @Override

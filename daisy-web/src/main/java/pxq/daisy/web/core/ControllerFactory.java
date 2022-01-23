@@ -13,22 +13,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author peixiaoqing
- * @date 2021/12/30
+ * @author peixiaoqing
+ * @date 2021/12/30
+ * @since 1.0.0
  */
 public class ControllerFactory {
 
-    private static final Map <String, DaisyControllerMethod> controllerMethodMap = new ConcurrentHashMap <>();
+    private static final Map<String, DaisyController> controllerMap = new ConcurrentHashMap<>();
 
     /**
      * 从缓存中获取代理类
+     *
      * @param uri
      * @return
      */
     public static SimpleController create(String uri) {
         int index = uri.indexOf("?");
-        DaisyControllerMethod method = controllerMethodMap.get(uri.substring(0,index));
-        return method.getController();
+        DaisyController controller = controllerMap.get(uri.substring(0, index));
+        return controller.getController();
     }
 
     /**
@@ -36,10 +38,11 @@ public class ControllerFactory {
      * 解析使用Controller注解的java类，
      * 并把其中使用GetMapping、PostMapping、PutMapping、DeleteMapping注解的方法生成SimpleController的代理类，
      * 并缓存uri和代理类
+     *
      * @param ctx
      */
     public static void init(ApplicationContext ctx) {
-        Map <String, Object> controllerMap = ctx.getBeansWithAnnotation(Controller.class);
+        Map<String, Object> controllerMap = ctx.getBeansWithAnnotation(Controller.class);
         for (String key : controllerMap.keySet()) {
             Object controller = controllerMap.get(key);
             Class controllerClazz = controller.getClass();
@@ -48,25 +51,25 @@ public class ControllerFactory {
                 for (Annotation annotation : method.getAnnotations()) {
                     if (annotation instanceof GetMapping) {
                         String[] uris = ((GetMapping) annotation).value();
-                        putMapping(uris, new DaisyControllerMethod(controller, method));
+                        putMapping(uris, new DaisyController(controller, method));
                         break;
                     }
 
                     if (annotation instanceof PostMapping) {
                         String[] uris = ((PostMapping) annotation).value();
-                        putMapping(uris, new DaisyControllerMethod(controller, method));
+                        putMapping(uris, new DaisyController(controller, method));
                         break;
                     }
 
                     if (annotation instanceof PutMapping) {
                         String[] uris = ((PutMapping) annotation).value();
-                        putMapping(uris, new DaisyControllerMethod(controller, method));
+                        putMapping(uris, new DaisyController(controller, method));
                         break;
                     }
 
                     if (annotation instanceof DeleteMapping) {
                         String[] uris = ((DeleteMapping) annotation).value();
-                        putMapping(uris, new DaisyControllerMethod(controller, method));
+                        putMapping(uris, new DaisyController(controller, method));
                         break;
                     }
                 }
@@ -74,9 +77,13 @@ public class ControllerFactory {
         }
     }
 
-    private static void putMapping(String[] uris, DaisyControllerMethod daisyMethod) {
+    private static void putMapping(String[] uris, DaisyController controller) {
         for (String uri : uris) {
-            controllerMethodMap.put(uri, daisyMethod);
+            DaisyController value = controllerMap.get(uri);
+            if (null != value) {
+                throw new RuntimeException("处理方法" + controller.getTargetMethod().toString() + "时发现uri=" + uri + "已经存在，" + value.getTargetMethod().toString());
+            }
+            controllerMap.put(uri, controller);
         }
     }
 }

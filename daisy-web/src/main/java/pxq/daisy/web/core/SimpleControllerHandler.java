@@ -1,13 +1,3 @@
-/**
- * 文件名：SimpleControllerHandler<br/>
- * CopyRight (c) 2019-2030：<br/>
- * 创建人：peixiaoqing
- * 日期：2021/12/31
- * 修改人：
- * 日期：
- * 描述：
- * 版本号：2.5.4
- */
 package pxq.daisy.web.core;
 
 import com.alibaba.fastjson.JSON;
@@ -28,12 +18,16 @@ import static io.netty.buffer.Unpooled.copiedBuffer;
  * SimpleController的处理器
  * 实际代理类在HttpServer启动时生成
  * @see HttpServer#initContext()
+ *
+ * @author peixiaoqing
+ * @date 2021/12/31
+ * @since 1.0.0
  */
 public class SimpleControllerHandler implements InvocationHandler {
 
-    private DaisyControllerMethod daisyControllerMethod;
+    private DaisyController daisyControllerMethod;
 
-    public SimpleControllerHandler(DaisyControllerMethod daisyMethod) {
+    public SimpleControllerHandler(DaisyController daisyMethod) {
         this.daisyControllerMethod = daisyMethod;
     }
 

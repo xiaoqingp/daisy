@@ -1,13 +1,3 @@
-/**
- * 文件名：HttpServerHandler<br/>
- * CopyRight (c) 2019-2030：<br/>
- * 创建人：peixiaoqing
- * 日期：2021/12/29
- * 修改人：
- * 日期：
- * 描述：
- * 版本号：1.0.0
- */
 package pxq.daisy.web.core;
 
 import io.netty.channel.*;
@@ -19,8 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author peixiaoqing
- * @date 2021/12/29
+ * netty 业务处理器
+ * @author peixiaoqing
+ * @date 2021/12/29
+ * @since 1.0.0
  */
 public class HttpHandler extends SimpleChannelInboundHandler <HttpObject> {
     private static final Logger log = LoggerFactory.getLogger(HttpHandler.class);

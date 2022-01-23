@@ -33,7 +33,7 @@
             <!-- netty 用于实现http协议 -->
             <dependency>
                 <groupId>io.netty</groupId>
-                <artifactId>netty-all</artifactId>
+                <artifactId>netty-codec-http</artifactId>
                 <version>${netty-version}</version>
             </dependency>
 
