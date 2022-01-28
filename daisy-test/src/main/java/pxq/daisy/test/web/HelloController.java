@@ -1,16 +1,20 @@
 package pxq.daisy.test.web;
 
 import org.springframework.stereotype.Controller;
+import pxq.daisy.test.mode.request.StudentRequest;
 import pxq.daisy.test.mode.response.HelloResponse;
+import pxq.daisy.web.annotation.DeleteMapping;
 import pxq.daisy.web.annotation.GetMapping;
+import pxq.daisy.web.annotation.PostMapping;
+import pxq.daisy.web.annotation.PutMapping;
 
 import java.util.List;
 
 /**
  * 测试类
  *
- * @author peixiaoqing
- * @date 2021/12/30
+ * @author peixiaoqing
+ * @date 2021/12/30
  */
 @Controller
 public class HelloController {
@@ -18,7 +22,6 @@ public class HelloController {
     /**
      * 测试返回html页面
      *
-     * @param name
      * @return
      */
     @GetMapping("/test/hello1")
@@ -30,7 +33,7 @@ public class HelloController {
     // 测试参数类型
     @GetMapping("/test/hello2")
     public String init2(String name, int age1, Integer age2, short s1, Short s2, long l1, Long l2) {
-        System.out.println("我是小拳拳:" + name + " 年龄：" + age1);
+        System.out.println("init2:" + name + " 年龄：" + age1);
 
         return "index";
     }
@@ -49,8 +52,84 @@ public class HelloController {
         return "index";
     }
 
-    @GetMapping("/test/hello4")
-    public String int4() {
+    // form表单提交，使用方法参数接收
+    @PostMapping("/test/post1")
+    public String post1(String name, int age) {
+        System.out.println("post1");
+        System.out.println("name=" + name + " age=" + age);
+        return "index";
+    }
+
+    // form表单提交，对象接收
+    @PostMapping("/test/post2")
+    public String post2(StudentRequest request) {
+        System.out.println("post2");
+        System.out.println("name=" + request.getName() + " age=" + request.getAge());
+        return "index";
+    }
+
+    // json字符串提交 对象接收
+    @PostMapping("/test/post3")
+    public String post3(StudentRequest request) {
+        System.out.println("post3");
+        System.out.println("name=" + request.getName() + " age=" + request.getAge());
+        return "index";
+    }
+
+    // json字符串提交, 参数接收
+    @PostMapping("/test/post4")
+    public String post4(StudentRequest request, String name, boolean agg) {
+        System.out.println("post4");
+        System.out.println("name=" + request.getName() + " age=" + request.getAge());
+        return "index";
+    }
+
+    // form表单提交
+    @PutMapping("/test/put1")
+    public String put1(String name, int age) {
+        System.out.println("put1");
+        System.out.println("name=" + name + " age=" + age);
+        return "index";
+    }
+
+    // form表单提交
+    @PutMapping("/test/put2")
+    public String put1(StudentRequest request) {
+        System.out.println("put2");
+        System.out.println("name=" + request.getName() + " age=" + request.getAge());
+        return "index";
+    }
+
+    // json提交
+    @PutMapping("/test/put3")
+    public String put3(String name, int age) {
+        System.out.println("put3");
+        System.out.println("name=" + name + " age=" + age);
+        return "index";
+    }
+
+    // json提交
+    @PutMapping("/test/put4")
+    public String put4(StudentRequest request) {
+        System.out.println("put4");
+        System.out.println("name=" + request.getName() + " age=" + request.getAge());
+        return "index";
+    }
+
+    // url方式提交
+    @DeleteMapping("/test/del1")
+    public String del1(Long studentId) {
+        System.out.println("del1");
+        System.out.println("删除 studentId=" + studentId);
+        return "index";
+    }
+
+    @DeleteMapping("/test/del2")
+    public String del1(List<Long> studentIds) {
+        System.out.println("del2");
+        for (Long studentId : studentIds) {
+            System.out.println("删除 studentId=" + studentId);
+        }
         return "index";
     }
 

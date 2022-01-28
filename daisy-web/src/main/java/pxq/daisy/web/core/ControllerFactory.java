@@ -24,13 +24,23 @@ public class ControllerFactory {
     /**
      * 从缓存中获取代理类
      *
-     * @param uri
-     * @return
+     * @param uri http请求地址
+     * @return controller的method生成的代理类
      */
     public static SimpleController create(String uri) {
         int index = uri.indexOf("?");
-        DaisyController controller = controllerMap.get(uri.substring(0, index));
-        return controller.getController();
+        DaisyController controller;
+        if (index > -1) {
+            controller = controllerMap.get(uri.substring(0, index));
+        } else {
+            controller = controllerMap.get(uri);
+        }
+
+        if (null == controller) {
+            // TODO 需要返回一个404
+            return null;
+        }
+        return controller.getControllerProxy();
     }
 
     /**
@@ -39,7 +49,7 @@ public class ControllerFactory {
      * 并把其中使用GetMapping、PostMapping、PutMapping、DeleteMapping注解的方法生成SimpleController的代理类，
      * 并缓存uri和代理类
      *
-     * @param ctx
+     * @param ctx spring 上下文
      */
     public static void init(ApplicationContext ctx) {
         Map<String, Object> controllerMap = ctx.getBeansWithAnnotation(Controller.class);

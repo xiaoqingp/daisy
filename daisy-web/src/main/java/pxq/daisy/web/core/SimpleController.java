@@ -1,5 +1,6 @@
 package pxq.daisy.web.core;
 
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 
@@ -16,7 +17,7 @@ public interface SimpleController {
     /**
      * 处理http请求
      *
-     * @param request
+     * @param request http请求参数
      */
-    HttpResponse doService(HttpRequest request);
+    HttpResponse doService(FullHttpRequest request);
 }

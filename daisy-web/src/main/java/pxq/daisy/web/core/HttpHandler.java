@@ -19,7 +19,7 @@ public class HttpHandler extends SimpleChannelInboundHandler <HttpObject> {
 
     private static final String FAVICON_ICO = "/favicon.ico";
 
-    private HttpRequest request;
+    private FullHttpRequest request;
     private HttpHeaders headers;
 
     static {
@@ -44,9 +44,9 @@ public class HttpHandler extends SimpleChannelInboundHandler <HttpObject> {
      */
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        if (msg instanceof HttpRequest) {
+        if (msg instanceof FullHttpRequest) {
             try {
-                request = (HttpRequest) msg;
+                request = (FullHttpRequest) msg;
                 headers = request.headers();
 
                 String uri = request.uri();

@@ -4,8 +4,10 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpContentCompressor;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 
 /**
  * netty 初始器
@@ -20,6 +22,7 @@ public class HttpInitializer extends ChannelInitializer <SocketChannel> {
         ChannelPipeline pipeline = ch.pipeline();
 
         pipeline.addLast(new HttpRequestDecoder());
+        pipeline.addLast(new HttpObjectAggregator(65536));
         pipeline.addLast(new HttpResponseEncoder());
 
         // Remove the following line if you don't want automatic content compression.

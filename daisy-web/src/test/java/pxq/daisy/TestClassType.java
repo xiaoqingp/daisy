@@ -30,6 +30,8 @@ public class TestClassType {
 
         }
 
+        System.out.println(StudentTestBO.class.getName());
+
     }
 
     public String test1(List<String> arr){

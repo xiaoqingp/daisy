@@ -6,7 +6,6 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import pxq.daisy.web.HttpServer;
 import pxq.daisy.web.spring.SpringAppContext;
 
 import java.lang.reflect.InvocationHandler;
@@ -17,7 +16,7 @@ import static io.netty.buffer.Unpooled.copiedBuffer;
 /**
  * SimpleController的处理器
  * 实际代理类在HttpServer启动时生成
- * @see HttpServer#initContext()
+ * @see ControllerFactory
  *
  * @author peixiaoqing
  * @date 2021/12/31
@@ -25,23 +24,31 @@ import static io.netty.buffer.Unpooled.copiedBuffer;
  */
 public class SimpleControllerHandler implements InvocationHandler {
 
-    private DaisyController daisyControllerMethod;
+    private DaisyController daisyController;
 
-    public SimpleControllerHandler(DaisyController daisyMethod) {
-        this.daisyControllerMethod = daisyMethod;
+    public SimpleControllerHandler(DaisyController daisyController) {
+        this.daisyController = daisyController;
     }
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        Object result = daisyControllerMethod.invoke(args);
+        Object result = null;
+        try {
+            FullHttpRequest httpRequest = (FullHttpRequest) args[0];
+            WebContext.put(httpRequest);
+            result = daisyController.invoke(httpRequest);
 
-        if (result instanceof String) {
-            // 如果是字符串默认为地址，使用thymeleaf解析
-            TemplateEngine engine = SpringAppContext.getBean(TemplateEngine.class);
-            String htmlTxt = engine.process(result.toString(), new Context());
-            return writePage(htmlTxt);
-        } else {
-            return writeJson(result);
+            if (result instanceof String) {
+                // 如果是字符串默认为地址，使用thymeleaf解析
+                TemplateEngine engine = SpringAppContext.getBean(TemplateEngine.class);
+                String htmlTxt = engine.process(result.toString(), new Context());
+                return writePage(htmlTxt);
+            } else {
+                return writeJson(result);
+            }
+
+        } finally {
+            WebContext.clean();
         }
     }
 
