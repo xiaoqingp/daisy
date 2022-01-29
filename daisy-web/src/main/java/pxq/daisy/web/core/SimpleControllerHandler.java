@@ -10,16 +10,17 @@ import pxq.daisy.web.spring.SpringAppContext;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.Locale;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
 /**
  * SimpleController的处理器
  * 实际代理类在HttpServer启动时生成
- * @see ControllerFactory
  *
  * @author peixiaoqing
  * @date 2021/12/31
+ * @see ControllerFactory
  * @since 1.0.0
  */
 public class SimpleControllerHandler implements InvocationHandler {
@@ -35,13 +36,15 @@ public class SimpleControllerHandler implements InvocationHandler {
         Object result = null;
         try {
             FullHttpRequest httpRequest = (FullHttpRequest) args[0];
-            WebContext.put(httpRequest);
+            WebContext.putRequest(httpRequest);
+            WebContext.putResponse(new DaisyResponse());
             result = daisyController.invoke(httpRequest);
 
             if (result instanceof String) {
                 // 如果是字符串默认为地址，使用thymeleaf解析
                 TemplateEngine engine = SpringAppContext.getBean(TemplateEngine.class);
-                String htmlTxt = engine.process(result.toString(), new Context());
+                String htmlTxt = engine.process(result.toString(),
+                        new Context(Locale.CHINA, WebContext.getResponse().getVariables()));
                 return writePage(htmlTxt);
             } else {
                 return writeJson(result);

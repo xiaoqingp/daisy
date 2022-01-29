@@ -100,7 +100,7 @@ public class HttpHandler extends SimpleChannelInboundHandler <HttpObject> {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        log.warn("连接异常", cause);
+        //log.warn("连接异常", cause);
         ctx.channel().close();
     }
 }

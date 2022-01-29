@@ -38,7 +38,7 @@ public class HttpServer {
     private ServerConfig config;
     private Class primarySource;
 
-    public HttpServer(ServerConfig config, Class <?> primarySource) {
+    public HttpServer(ServerConfig config, Class<?> primarySource) {
         this.config = config;
         this.primarySource = primarySource;
     }
@@ -46,7 +46,7 @@ public class HttpServer {
     /**
      * 启动服务入口
      */
-    public static ApplicationContext run(Class <?> primarySource, String... args) {
+    public static ApplicationContext run(Class<?> primarySource, String... args) {
         // 读取properties文件
         ServerConfig config = ConfigFactory.create(ServerConfig.class);
 
@@ -68,7 +68,7 @@ public class HttpServer {
 
         // 1 扫描启动类的类路径初始化上下文
         String basePackage = primarySource.getPackage().getName();
-        ctx.scan(DEFAULT_SCAN_PATH,basePackage);
+        ctx.scan(DEFAULT_SCAN_PATH, basePackage);
         ctx.refresh();
 
         // 2 初始化Controller工厂类
@@ -91,7 +91,11 @@ public class HttpServer {
             b.group(bossGroup, workerGroup);
             b.channel(NioServerSocketChannel.class);
             b.childOption(ChannelOption.SO_REUSEADDR, true);
-            b.handler(new LoggingHandler(this.getLogLevel()));
+
+            LogLevel logLevel = this.getLogLevel();
+            if (null != logLevel && logLevel.equals(LogLevel.DEBUG)) {
+                b.handler(new LoggingHandler(logLevel));
+            }
             b.childHandler(new HttpInitializer());
 
             Channel ch = b.bind(config.port()).sync().channel();

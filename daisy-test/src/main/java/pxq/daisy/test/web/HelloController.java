@@ -7,6 +7,8 @@ import pxq.daisy.web.annotation.DeleteMapping;
 import pxq.daisy.web.annotation.GetMapping;
 import pxq.daisy.web.annotation.PostMapping;
 import pxq.daisy.web.annotation.PutMapping;
+import pxq.daisy.web.core.DaisyResponse;
+import pxq.daisy.web.core.WebContext;
 
 import java.util.List;
 
@@ -27,6 +29,10 @@ public class HelloController {
     @GetMapping("/test/hello1")
     public String init1(String name, int age) {
         System.out.println("我是小拳拳:" + name + " 年龄：" + age);
+        DaisyResponse response = WebContext.getResponse();
+
+        response.addAttribute("name", name);
+        response.addAttribute("age", age);
         return "index";
     }
 
