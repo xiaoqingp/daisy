@@ -21,6 +21,11 @@ import java.util.List;
 @Controller
 public class HelloController {
 
+    @GetMapping("/test/hello")
+    public String hello() {
+        return "hello";
+    }
+
     /**
      * 测试返回html页面
      *

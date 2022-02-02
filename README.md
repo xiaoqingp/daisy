@@ -9,10 +9,10 @@
 # daisy-web
 	daisy-web是使用netty作为web容器的MVC框架，可以把http请求url后和body中的参数转换为Controller Method中的入参。
 
-1. 支持的封装参数类型有：java.lang.Short、java.lang.Integer、java.lang.Float、java.lang.Double、java.lang.Long、java.lang.String
-2. 支持的基本参数类型有：short、int、float、double、long、string，如果请参数中没有默认会给一个0.
-3. 支持的数组类型有：java.util.List
-4. 支持：get、put、post、delete四种请求方式
+1. 支持的封装参数类型有：java.lang.Short、java.lang.Integer、java.lang.Float、java.lang.Double、java.lang.Long、java.lang.String。
+2. 支持的基本参数类型有：short、int、float、double、long、string，如果请求参数中没有默认会给一个0。
+3. 支持的数组类型有：java.util.List。
+4. 支持：get、put、post、delete四种请求方式。
 
 ## 使用
 
