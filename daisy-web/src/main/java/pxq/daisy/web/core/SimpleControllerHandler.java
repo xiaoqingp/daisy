@@ -11,6 +11,7 @@ import pxq.daisy.web.spring.SpringAppContext;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.Locale;
+import java.util.Map;
 
 import static io.netty.buffer.Unpooled.copiedBuffer;
 
@@ -43,8 +44,9 @@ public class SimpleControllerHandler implements InvocationHandler {
             if (result instanceof String) {
                 // 如果是字符串默认为地址，使用thymeleaf解析
                 TemplateEngine engine = SpringAppContext.getBean(TemplateEngine.class);
-                String htmlTxt = engine.process(result.toString(),
-                        new Context(Locale.CHINA, WebContext.getResponse().getVariables()));
+                Map<String, Object> variables = WebContext.getResponse().getVariables();
+                variables.put("basePath", "/");
+                String htmlTxt = engine.process(result.toString(),new Context(Locale.CHINA, variables));
                 return writePage(htmlTxt);
             } else {
                 return writeJson(result);

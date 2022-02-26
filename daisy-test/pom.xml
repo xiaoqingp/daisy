@@ -13,6 +13,12 @@
     <packaging>jar</packaging>
 
     <description>测试工程</description>
+    
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+	</properties>
 
     <dependencies>
         <dependency>

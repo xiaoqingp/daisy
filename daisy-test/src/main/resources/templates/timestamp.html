@@ -1,10 +1,50 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>timestamp</title>
+<meta charset="UTF-8">
+<title>timestamp</title>
+<base th:href="${basePath}">
+<link rel="stylesheet" href="static/bootstrap/css/bootstrap.min.css">
 </head>
-<body>
-<h1>timestamptimestamptimestamptimestamp</h1>
+<body style="padding: 10px;">
+	<form class="row g-3">
+		<div class="col-md-3">
+			<input type="text" class="form-control" id="timestampValue"
+				placeholder="时间戳" th:value="${timestamp}">
+		</div>
+		<div class="col-md-2">
+			<select class="form-select" id="timestampType">
+				<option value="1">秒(s)</option>
+				<option selected value="2">毫秒(ms)</option>
+			</select>
+		</div>
+		<div class="col-md-1">
+			<button type="button" class="btn btn-primary"
+				onclick="timestamp2time()">转换</button>
+		</div>
+		<div class="col-md-4">
+			<input type="text" class="form-control" id="time">
+		</div>
+		
+		<div class="col-md-3">
+			<input type="text" class="form-control" id="timestr"
+				placeholder="时间" th:value="${time}">
+		</div>
+		<div class="col-md-1">
+			<button type="button" class="btn btn-primary"
+				onclick="timestr2timestamp()">转换</button>
+		</div>
+	</form>
 </body>
+<script type="text/javascript" src="static/jquery/jquery-3.6.0.min.js"></script>
+<script type="text/javascript">
+	function timestamp2time() {
+		$.post("/tools/timestamp", {
+			timestampValue: $("#timestampValue").val(),
+			timestampType: $("#timestampType").val()
+		}, function(response) {
+			$("#time").val(response.time)
+		});
+	}
+</script>
 </html>

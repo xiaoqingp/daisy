@@ -54,8 +54,8 @@ public class HttpHandler extends SimpleChannelInboundHandler <HttpObject> {
                 if (uri.equals(FAVICON_ICO)) {
                     return;
                 }
-
-                SimpleController controller = ControllerFactory.create(uri);
+                
+                SimpleController controller = ControllerFactory.create(request);
                 HttpResponse response = controller.doService(request);
 
                 writeResponse(ctx.channel(), response, false);

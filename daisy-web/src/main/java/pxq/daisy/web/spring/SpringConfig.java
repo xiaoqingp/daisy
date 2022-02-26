@@ -1,13 +1,3 @@
-/**
- * 文件名：SpringConfig<br/>
- * CopyRight (c) 2019-2030：<br/>
- * 创建人：peixiaoqing
- * 日期：2021/12/31
- * 修改人：
- * 日期：
- * 描述：
- * 版本号：2.5.4
- */
 package pxq.daisy.web.spring;
 
 import org.springframework.context.annotation.Bean;
@@ -18,8 +8,10 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 /**
- * @author peixiaoqing
- * @date 2021/12/31
+ * 必须的spring bean 配置入口
+ * @author peixiaoqing
+ * @date 2021/12/31
+ * @since 1.0.0
  */
 @Configuration
 public class SpringConfig {
@@ -36,6 +28,7 @@ public class SpringConfig {
         ClassLoaderTemplateResolver resolver = new ClassLoaderTemplateResolver();
         resolver.setPrefix("templates/");//模板所在目录，相对于当前classloader的classpath。
         resolver.setSuffix(".html");//模板文件后缀
+        resolver.setCacheable(false);
         TemplateEngine templateEngine = new TemplateEngine();
         templateEngine.setTemplateResolver(resolver);
 

@@ -2,6 +2,9 @@ package pxq.daisy.web.core;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
+
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
 import pxq.daisy.web.annotation.DeleteMapping;
 import pxq.daisy.web.annotation.GetMapping;
 import pxq.daisy.web.annotation.PostMapping;
@@ -20,32 +23,37 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ControllerFactory {
 
     private static final Map<String, DaisyController> controllerMap = new ConcurrentHashMap<>();
+    private static final SimpleController staticResourceController = new StaticResourceController();
 
     /**
      * 从缓存中获取代理类
      *
-     * @param uri http请求地址
+     * @param request http请求
      * @return controller的method生成的代理类
      */
-    public static SimpleController create(String uri) {
+    public static SimpleController create(FullHttpRequest request) {
+        String uri = request.uri();
+        HttpMethod method = request.method();
+
         int index = uri.indexOf("?");
         DaisyController controller;
         if (index > -1) {
-            controller = controllerMap.get(uri.substring(0, index));
+            controller = controllerMap.get(method.toString() + ":" + uri.substring(0, index));
         } else {
-            controller = controllerMap.get(uri);
+            controller = controllerMap.get(method.toString() + ":" + uri);
         }
 
         if (null == controller) {
-            // TODO 需要返回一个404
+            if (uri.endsWith(".css") || uri.endsWith(".js")) {
+                return staticResourceController;
+            }
             return null;
         }
         return controller.getControllerProxy();
     }
 
     /**
-     * 初始化工厂
-     * 解析使用Controller注解的java类，
+     * 初始化工厂 解析使用Controller注解的java类，
      * 并把其中使用GetMapping、PostMapping、PutMapping、DeleteMapping注解的方法生成SimpleController的代理类，
      * 并缓存uri和代理类
      *
@@ -55,31 +63,31 @@ public class ControllerFactory {
         Map<String, Object> controllerMap = ctx.getBeansWithAnnotation(Controller.class);
         for (String key : controllerMap.keySet()) {
             Object controller = controllerMap.get(key);
-            Class controllerClazz = controller.getClass();
+            Class<?> controllerClazz = controller.getClass();
             Method[] methods = controllerClazz.getMethods();
             for (Method method : methods) {
                 for (Annotation annotation : method.getAnnotations()) {
                     if (annotation instanceof GetMapping) {
                         String[] uris = ((GetMapping) annotation).value();
-                        putMapping(uris, new DaisyController(controller, method));
+                        putMapping(uris, new DaisyController(controller, method), HttpMethod.GET);
                         break;
                     }
 
                     if (annotation instanceof PostMapping) {
                         String[] uris = ((PostMapping) annotation).value();
-                        putMapping(uris, new DaisyController(controller, method));
+                        putMapping(uris, new DaisyController(controller, method), HttpMethod.POST);
                         break;
                     }
 
                     if (annotation instanceof PutMapping) {
                         String[] uris = ((PutMapping) annotation).value();
-                        putMapping(uris, new DaisyController(controller, method));
+                        putMapping(uris, new DaisyController(controller, method), HttpMethod.PUT);
                         break;
                     }
 
                     if (annotation instanceof DeleteMapping) {
                         String[] uris = ((DeleteMapping) annotation).value();
-                        putMapping(uris, new DaisyController(controller, method));
+                        putMapping(uris, new DaisyController(controller, method), HttpMethod.DELETE);
                         break;
                     }
                 }
@@ -87,13 +95,14 @@ public class ControllerFactory {
         }
     }
 
-    private static void putMapping(String[] uris, DaisyController controller) {
+    private static void putMapping(String[] uris, DaisyController controller, HttpMethod method) {
         for (String uri : uris) {
             DaisyController value = controllerMap.get(uri);
             if (null != value) {
-                throw new RuntimeException("处理方法" + controller.getTargetMethod().toString() + "时发现uri=" + uri + "已经存在，" + value.getTargetMethod().toString());
+                throw new RuntimeException("处理方法" + controller.getTargetMethod().toString() + "时发现uri=" + uri + "已经存在，"
+                        + value.getTargetMethod().toString());
             }
-            controllerMap.put(uri, controller);
+            controllerMap.put(method.toString() + ":" + uri, controller);
         }
     }
 }
