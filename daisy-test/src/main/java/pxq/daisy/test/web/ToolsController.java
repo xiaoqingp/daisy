@@ -1,5 +1,6 @@
 package pxq.daisy.test.web;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import cn.hutool.core.date.format.FastDateFormat;
 import pxq.daisy.test.mode.request.Num2TimeRequest;
 import pxq.daisy.test.mode.response.Num2TimeResponse;
+import pxq.daisy.test.mode.response.Time2NumResponse;
 import pxq.daisy.web.annotation.GetMapping;
 import pxq.daisy.web.annotation.PostMapping;
 import pxq.daisy.web.core.WebContext;
@@ -40,7 +42,7 @@ public class ToolsController {
 	 * @param request
 	 * @return
 	 */
-	@PostMapping("/tools/timestamp")
+	@PostMapping("/tools/timestamp2time")
 	public Num2TimeResponse timestamp(Num2TimeRequest request) {
 		Num2TimeResponse response = new Num2TimeResponse();
 		long timestamp = 0;
@@ -52,6 +54,19 @@ public class ToolsController {
 			timestamp = request.getTimestampValue();
 		}
 		response.setTime(FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").format(new Date(timestamp)));
+		return response;
+	}
+
+	/**
+	 * 时间字符串转换为时间戳
+	 * @param timeStr
+	 * @return
+	 */
+	@PostMapping("/tools/time2timestamp")
+	public Time2NumResponse timestamp(String timeStr) throws ParseException {
+		Time2NumResponse response = new Time2NumResponse();
+		Date date = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss").parse(timeStr);
+		response.setTimestamp(date.getTime());
 		return response;
 	}
 

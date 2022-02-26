@@ -28,22 +28,36 @@
 		
 		<div class="col-md-3">
 			<input type="text" class="form-control" id="timestr"
-				placeholder="时间" th:value="${time}">
+				placeholder="时间">
 		</div>
 		<div class="col-md-1">
 			<button type="button" class="btn btn-primary"
 				onclick="timestr2timestamp()">转换</button>
 		</div>
+		<div class="col-md-3">
+			<input type="text" class="form-control" id="timestamp"
+				   placeholder="时间戳">
+		</div>
 	</form>
 </body>
 <script type="text/javascript" src="static/jquery/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
+	<!-- 时间戳字符串转换为时间字符串 -->
 	function timestamp2time() {
-		$.post("/tools/timestamp", {
+		$.post("/tools/timestamp2time", {
 			timestampValue: $("#timestampValue").val(),
 			timestampType: $("#timestampType").val()
 		}, function(response) {
 			$("#time").val(response.time)
+		});
+	}
+
+	<!-- 时间字符串转换为时间戳-->
+	function timestr2timestamp(){
+		$.post("/tools/time2timestamp",{
+			timeStr : $("#timestr").val()
+		}, function(response){
+			$("#timestamp").val(response.timestamp)
 		});
 	}
 </script>
